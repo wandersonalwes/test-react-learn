@@ -1,27 +1,18 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useHotKey } from "../../hooks/useHotKey";
 
 export function TodoList() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<string[]>([]);
 
-  const addTodo = () => {
+  const addTodo = useCallback(() => {
     if (!todo) return;
     if (todos.includes(todo)) return;
     setTodos([...todos, todo]);
     setTodo("");
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        addTodo();
-      }
-    });
-
-    return () => {
-      window.removeEventListener("keydown", () => {});
-    };
   }, [todo]);
+
+  useHotKey("Enter", addTodo);
 
   return (
     <div>
