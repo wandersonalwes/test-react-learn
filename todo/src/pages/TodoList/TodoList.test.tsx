@@ -9,7 +9,8 @@ describe("TodoList", () => {
 
     expect(screen.getByTestId("todo-list")).toBeInTheDocument();
   });
-  test("should add todo press enter", () => {
+
+  test("should change the input value when typing", () => {
     render(<TodoList />);
 
     const input = screen.getByTestId("todo-input");
@@ -19,6 +20,33 @@ describe("TodoList", () => {
     });
 
     expect(input).toHaveValue("Todo");
+  });
+
+  test("should clear input on save", () => {
+    render(<TodoList />);
+
+    const input = screen.getByTestId("todo-input");
+
+    fireEvent.change(input, {
+      target: { value: "Todo" },
+    });
+
+    fireEvent.keyDown(input, {
+      key: "Enter",
+      code: 13,
+    });
+
+    expect(input).toHaveValue("");
+  });
+
+  test("should add todo press enter", () => {
+    render(<TodoList />);
+
+    const input = screen.getByTestId("todo-input");
+
+    fireEvent.change(input, {
+      target: { value: "Todo" },
+    });
 
     fireEvent.keyDown(input, {
       key: "Enter",
@@ -26,7 +54,6 @@ describe("TodoList", () => {
     });
 
     expect(screen.getByTestId("todo-list")).toHaveTextContent("Todo");
-    expect(input).toHaveValue("");
   });
 
   test("should add todo click button", () => {
@@ -39,25 +66,20 @@ describe("TodoList", () => {
       target: { value: "Todo" },
     });
 
-    expect(input).toHaveValue("Todo");
-
     fireEvent.click(button);
 
     expect(screen.getByTestId("todo-list")).toHaveTextContent("Todo");
-    expect(input).toHaveValue("");
   });
 
   test("should not add empty todo", () => {
     render(<TodoList />);
 
-    const input = screen.getByTestId("todo-input");
     const button = screen.getByTestId("todo-button");
     const list = screen.getByTestId("todo-list");
 
     fireEvent.click(button);
 
     expect(list.children.length).toBe(0);
-    expect(input).toHaveValue("");
   });
 
   test("should not add duplicated todo", () => {
@@ -71,19 +93,11 @@ describe("TodoList", () => {
       target: { value: "Todo" },
     });
 
-    expect(input).toHaveValue("Todo");
-
     fireEvent.click(button);
-
-    expect(screen.getByTestId("todo-list")).toHaveTextContent("Todo");
-    expect(input).toHaveValue("");
-    expect(list.children.length).toBe(1);
 
     fireEvent.change(input, {
       target: { value: "Todo" },
     });
-
-    expect(input).toHaveValue("Todo");
 
     fireEvent.click(button);
     expect(list.children.length).toBe(1);
