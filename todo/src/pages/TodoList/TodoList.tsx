@@ -12,6 +12,12 @@ export function TodoList() {
     setTodo("");
   }, [todo]);
 
+  const deleteTodo = useCallback((todo: string) => {
+    setTodos((currentTodos) =>
+      currentTodos.filter((currentTodo) => currentTodo !== todo)
+    );
+  }, []);
+
   useHotKey("Enter", addTodo);
 
   return (
@@ -31,7 +37,16 @@ export function TodoList() {
 
       <ul data-testid="todo-list">
         {todos.map((todo, index) => (
-          <li key={index}>{todo}</li>
+          <li key={index}>
+            {todo}
+
+            <button
+              data-testid="todo-remove-item"
+              onClick={() => deleteTodo(todo)}
+            >
+              x
+            </button>
+          </li>
         ))}
       </ul>
     </div>
