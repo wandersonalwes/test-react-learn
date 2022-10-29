@@ -102,4 +102,42 @@ describe("TodoList", () => {
     fireEvent.click(button);
     expect(list.children.length).toBe(1);
   });
+
+  test("should have a remove button on every task", () => {
+    render(<TodoList />);
+    const input = screen.getByTestId("todo-input");
+
+    fireEvent.change(input, {
+      target: { value: "Todo" },
+    });
+
+    fireEvent.keyDown(input, {
+      key: "Enter",
+      code: 13,
+    });
+
+    expect(screen.getAllByTestId("todo-remove-item").length).toBe(1);
+  });
+
+  test("should remove task by clicking delete", () => {
+    render(<TodoList />);
+    const input = screen.getByTestId("todo-input");
+
+    fireEvent.change(input, {
+      target: { value: "Todo" },
+    });
+
+    fireEvent.keyDown(input, {
+      key: "Enter",
+      code: 13,
+    });
+
+    const button = screen.getByTestId("todo-remove-item");
+
+    fireEvent.click(button);
+
+    const list = screen.getByTestId("todo-list");
+
+    expect(list.children.length).toBe(0);
+  });
 });
